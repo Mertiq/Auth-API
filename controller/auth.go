@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"Auth-API/domain/dto/request"
+	"Auth-API/entity/dto/request"
 	"Auth-API/infrastracture/errors"
 	"Auth-API/repository"
 	"Auth-API/service"
@@ -37,4 +37,18 @@ func (controller *AuthController) Register(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(newUser)
+}
+
+func (controller *AuthController) Login(c *fiber.Ctx) error {
+	var req request.LoginRequest
+	if err := c.BodyParser(&req); err != nil {
+		return errors.NewBadRequestError(c, err)
+	}
+
+	token, err := controller.AuthService.Login(c, req)
+
+	if err != nil {
+		return err
+	}
+	return c.Status(fiber.StatusOK).JSON(token)
 }

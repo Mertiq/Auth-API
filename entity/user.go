@@ -1,7 +1,7 @@
-package domain
+package entity
 
 import (
-	"Auth-API/domain/enums"
+	"Auth-API/entity/enums"
 	"time"
 )
 
