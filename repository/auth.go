@@ -8,13 +8,12 @@ import (
 )
 
 type AuthRepository struct {
-	database *gorm.DB
-	ctx      *fiber.Ctx
+	Database *gorm.DB
 }
 
-func (repository *AuthRepository) Register(user *domain.User) error {
-	if err := repository.database.Create(&user).Error; err != nil {
-		return errors.NewInternalServerError(repository.ctx, err)
+func (repository *AuthRepository) Register(ctx *fiber.Ctx, user *domain.User) error {
+	if err := repository.Database.Create(&user).Error; err != nil {
+		return errors.NewInternalServerError(ctx, err)
 	}
 	return nil
 }

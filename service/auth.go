@@ -4,15 +4,16 @@ import (
 	"Auth-API/domain"
 	"Auth-API/domain/dto/request"
 	"Auth-API/repository"
+	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
 	"time"
 )
 
 type AuthService struct {
-	authRepository repository.AuthRepository
+	AuthRepository *repository.AuthRepository
 }
 
-func (service *AuthService) Register(request request.RegisterRequest) (domain.User, error) {
+func (service *AuthService) Register(ctx *fiber.Ctx, request request.RegisterRequest) (domain.User, error) {
 	password, _ := bcrypt.GenerateFromPassword([]byte(request.Password), 14)
 	newUser := domain.User{
 		UserName:  request.UserName,
@@ -22,7 +23,7 @@ func (service *AuthService) Register(request request.RegisterRequest) (domain.Us
 		CreatedAt: time.Now(),
 	}
 
-	err := service.authRepository.Register(&newUser)
+	err := service.AuthRepository.Register(ctx, &newUser)
 
 	return newUser, err
 }

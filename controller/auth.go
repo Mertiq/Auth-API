@@ -3,12 +3,24 @@ package controller
 import (
 	"Auth-API/domain/dto/request"
 	"Auth-API/infrastracture/errors"
+	"Auth-API/repository"
 	"Auth-API/service"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 type AuthController struct {
-	authService service.AuthService
+	AuthService *service.AuthService
+}
+
+func NewAuthController(database *gorm.DB) *AuthController {
+	return &AuthController{
+		AuthService: &service.AuthService{
+			AuthRepository: &repository.AuthRepository{
+				Database: database,
+			},
+		},
+	}
 }
 
 func (controller *AuthController) Register(c *fiber.Ctx) error {
@@ -18,7 +30,7 @@ func (controller *AuthController) Register(c *fiber.Ctx) error {
 		return errors.NewBadRequestError(c, err)
 	}
 
-	newUser, err := controller.authService.Register(req)
+	newUser, err := controller.AuthService.Register(c, req)
 
 	if err != nil {
 		return err
